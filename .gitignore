@@ -58,3 +58,6 @@ docs/_build/
 .DS_Store
 
 *.iml
+photos/*.jpg
+printer/*.jpg
+printer/*.png

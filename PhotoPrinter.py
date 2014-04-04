@@ -40,20 +40,23 @@ def printer():
 
     objects = request.get_json()
     template = Image.open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static', 'img', 'template_full.jpg'))
+    template = template.convert('RGBA')
     for photo in objects:
         image = Image.open(os.path.join(UPLOAD_FOLDER, os.path.basename(photo['src'])))
+        image = image.convert('RGBA')
+
         height = int(photo['height']) * 2
         width = int(photo['width']) * 2
         size = width, height
-        print str(size)
-        image.thumbnail(size, Image.ANTIALIAS)
 
+        image.thumbnail(size, Image.ANTIALIAS)
+        image = image.rotate(-int(photo['rotation']), expand=1)
         top = int(photo['top']) * 2
         left = int(photo['left']) * 2
         template.paste(image, (left, top))
 
     time_string = str(int(time.time() * 1000))
-    final_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', time_string+'print.jpg')
+    final_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', time_string+'print.png')
     template.save(final_location)
 
     for photo in objects:
