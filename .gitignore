@@ -53,6 +53,5 @@ coverage.xml
 docs/_build/
 
 .idea/
-photos/*.jpg
-printer/*.jpg
 
+.DS_Store
