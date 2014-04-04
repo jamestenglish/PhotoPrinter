@@ -1,0 +1,50 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    line-height: 0px;
+}
+
+html{
+    min-height: 100%;
+    position: relative;
+
+}
+
+body{
+    min-height: 600px;
+}
+
+#upload_field {
+    border: 1px solid black;
+    background: gray;
+    height: 100px;
+    width: 100%;
+
+}
+.grid {
+    height: 148px;
+    width: 148px;
+    border: 1px solid black;
+    display: inline-block;
+}
+.row {
+    width: 600px;
+
+}
+#container {
+    line-height: 0px;
+    margin-right: auto;
+    margin-left: auto;
+    display: inline-block;
+    position: relative;
+    height: 900px;
+}
+
+.photo {
+    position: absolute;
+    display: inline-block;
+}
+#print {
+    height: 50px;
+    width: 100px;
+}
