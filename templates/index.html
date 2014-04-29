@@ -13,22 +13,64 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 </head>
 <body>
-<input type="file" multiple="multiple" id="upload_field" />
-<div class="spacer"></div>
-<button id="print" type="button">Print</button>
-    <center>
     <div id="container">
-        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
-        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
-        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div>
-        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
-        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
-        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
-    </div>
-    </center>
-</div>
-<script type="text/javascript">
 
-</script>
+
+        <div id="tabs">
+            <ul>
+                <li><a href="#create-collage">Create Collage</a></li>
+                <li><a href="#print-whole">Print Whole Images</a></li>
+                <li><a href="#print-old" class="previous-refresh">Print Previous Images</a></li>
+            </ul>
+
+
+            <div id="create-collage">
+
+                <input type="file" multiple="multiple" id="upload_field" class="upload_field" />
+                <div class="spacer"></div>
+                <button id="preview" type="button" class="btn">Preview</button>
+                <center>
+
+                    <div id="preview_container" style="display:none">
+                        <img id="preview_img" src="" height="600px" width="400px" style="padding-top: 100px; padding-bottom: 100px"/>
+                        <div></div>
+                        <button id="cancel" type="button" class="btn">Cancel</button>
+                        <button id="print" type="button" class="btn">Print</button>
+                    </div>
+
+                    <div id="img_container">
+                        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
+                        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
+                        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
+                        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
+                        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
+                        <div class="row"><div class="grid"></div><div class="grid"></div><div class="grid"></div><div class="grid"></div></div>
+                    </div>
+
+                    <div style="height: 300px"></div>
+
+
+
+                </center>
+            </div>
+
+            <div id="print-whole">
+                <input type="file" multiple="multiple" id="upload_whole_field" class="upload_field"/>
+                <div style="display: none" id="print-whole-wait">Printing...</div>
+            </div>
+
+            <div id="print-old"
+                 <div>
+                     <ul id="old-pics">
+                        <li>Loading...</li>
+                     </ul>
+                 </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+    </script>
 </body>
 </html>

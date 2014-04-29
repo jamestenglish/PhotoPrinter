@@ -14,9 +14,9 @@ body{
     min-height: 600px;
 }
 
-#upload_field {
+.upload_field {
     border: 1px solid black;
-    background: gray;
+    background: darkblue;
     height: 100px;
     width: 100%;
 
@@ -27,24 +27,47 @@ body{
     border: 1px solid black;
     display: inline-block;
 }
+
 .row {
     width: 600px;
 
 }
-#container {
+#container, #create-collage {
+    position: relative;
+    background-color: gray;
+}
+
+
+
+#img_container {
     line-height: 0px;
     margin-right: auto;
     margin-left: auto;
     display: inline-block;
     position: relative;
     height: 900px;
+    background-color: white;
+}
+
+#preview_container {
+    background-color: black;
 }
 
 .photo {
     position: absolute;
     display: inline-block;
 }
-#print {
+.btn {
     height: 50px;
     width: 100px;
+}
+
+.img_list {
+    border: 1px solid black;
+    margin-bottom: 10px;
+}
+
+.thumbnail {
+    height: 200px;
+    width: 133px;
 }
