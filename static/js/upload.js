@@ -23,6 +23,7 @@ $(function() {
         },
         sendBoundary: window.FormData || $.browser.mozilla,
         onStart: function(event, total) {
+            $('#upload_field').hide();
             return true;
         },
         onProgress: function(event, progress, name, number, total) {
@@ -69,34 +70,33 @@ $(function() {
                                     maxWidth: width/2});
                 $div.draggable();
 
+                $(this).parent().css('position', 'static');
+
                 var date = new Date();
-                var freeRotateClass = date.getTime() + 'A';
+                var moveUpClass = date.getTime() + 'A';
                 var snapRotateClass = date.getTime() + 'B';
 
-//                var $handleFreeRotate = $('<div>');
-//                $handleFreeRotate.addClass(freeRotateClass).insertAfter($(this)).css({
-//                    'position': 'absolute',
-//                    'bottom': 5,
-//                    'left': 5,
-//                    'height': 16,
-//                    'width': 16,
-//                    'background': "url('/static/img/rotate.png')"
-//                });
-//
-//                $('.'+freeRotateClass).draggable({
-//                    opacity: 0.01,
-//                    helper: 'clone',
-//                    start: function(event, ui) {
-//                    },
-//                    drag: function(event, ui){
-//                        var rotateCSS = 'rotate(' + ui.position.left + 'deg)';
-//
-//                        $(this).parent().parent().css({
-//                            '-moz-transform': rotateCSS,
-//                            '-webkit-transform': rotateCSS
-//                        });
-//                    }
-//                });
+                var $handleMoveUp = $('<div>');
+                $handleMoveUp.addClass(moveUpClass).insertAfter($(this)).css({
+                    'position': 'absolute',
+                    'bottom': 5,
+                    'left': 5,
+                    'height': 16,
+                    'width': 16,
+                    'background': "blue"
+                });
+
+                $('.'+moveUpClass).click(function() {
+
+                    var $img = $(this).parent().parent();
+                    console.log($($img));
+                    var $sibling = $img.prev();
+                    console.log($sibling);
+                    if(!$sibling.hasClass('row')) {
+                        $img.prependTo($sibling.parent());
+                    }
+
+                });
 
                 var $handleSnapRotate = $('<div>');
                 $handleSnapRotate.addClass(snapRotateClass).insertAfter($(this)).css({
@@ -127,6 +127,11 @@ $(function() {
         },
         onError: function(event, name, error) {
             alert('error while uploading file ' + name);
+        },
+        onFinish: function(event, total) {
+            setTimeout(function(){
+                $('#upload_field').show();
+            }, total * 1000);
         }
     });
 
@@ -164,8 +169,10 @@ $(function() {
             dataType: 'json',
             url: '/preview'
         });
+        $('#preview').hide();
+        $('#preview_img').attr('src', '');
 
-        promise.done(displayPreviewBox)
+        promise.done(displayPreviewBox);
 
     });
 
@@ -196,6 +203,7 @@ $(function() {
         var $button = $('#preview');
 
         setTimeout(function(){
+            $('#preview').show();
             $button.attr('disabled', false);
             $button.html('Preview');
             $('.photo').each(function() {
@@ -208,6 +216,8 @@ $(function() {
     });
 
     $('#cancel').click(function() {
+        $('#preview').show();
+        $('#preview_img').attr('src', '');
         $('#preview_container').hide();
     });
 
@@ -218,6 +228,8 @@ $(function() {
         },
         sendBoundary: window.FormData || $.browser.mozilla,
         onStart: function(event, total) {
+            $('#print-whole-wait').show();
+            $('#upload_whole_field').hide();
             return true;
         },
         onProgress: function(event, progress, name, number, total) {
@@ -233,10 +245,14 @@ $(function() {
             $("#progress_report_bar").css('width', Math.ceil(val*100)+"%");
         },
         onFinishOne: function(event, response, name, number, total) {
-            $('#print-whole-wait').show();
+
+
+        },
+        onFinish: function(event, total) {
             setTimeout(function(){
                 $('#print-whole-wait').hide();
-            }, 30000);
+                $('#upload_whole_field').show();
+            }, total * 30000);
         },
         onError: function(event, name, error) {
             alert('error while uploading file ' + name);
@@ -260,15 +276,15 @@ $(function() {
             $('#old-pics').empty();
             console.log(result);
             $.each(result['data'], function(index, value) {
+                console.log(value);
                 console.log(index);
-                $('#old-pics').append('<li class="img_list"><img id="img_' + index + '" src="' + value + '" class="thumbnail" /> <button class="btn print-previous" id="btn_' + index + '" type="button" class="btn">Print</button> </li>');
+                $('#old-pics').append('<li class="img_list"><img id="img_' + index + '" src="' + value[1] + '" class="thumbnail" /> <button img="' + value[0] + '" class="btn print-previous" id="btn_' + index + '" type="button" class="btn">Print</button> </li>');
             });
         });
     });
 
     $('#old-pics').on('click', '.print-previous', function() {
-        var id_num = $(this).attr('id').split('_')[1];
-        var location = $('#img_' + id_num).attr('src');
+        var location = $(this).attr('img')
         console.log(location);
 
         var data = {'data': location};
@@ -284,6 +300,14 @@ $(function() {
             dataType: 'json',
             url: '/print'
         });
+
+        $('.print-previous').attr('disabled', true);
+        $('.print-previous').html('...Printing...');
+
+        setTimeout(function(){
+            $('.print-previous').attr('disabled', false);
+            $('.print-previous').html('Printing');
+        }, 30000);
     });
 
 

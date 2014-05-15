@@ -10,9 +10,11 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'photos')
 PRINTER_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer')
+PREVIEW_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'preview')
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['PRINTER_FOLDER'] = PRINTER_FOLDER
+app.config['PREVIEW_FOLDER'] = PREVIEW_FOLDER
 
 USE_PRINTER = False
 
@@ -63,6 +65,10 @@ def upload_whole():
             final_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', time_string+'print.png')
             template.save(final_location)
 
+            preview_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'preview', time_string+'print.png')
+            template.thumbnail((200, 133), Image.ANTIALIAS)
+            template.save(preview_location)
+
             print(final_location)
             if USE_PRINTER:
                 call(["i_view32.exe", final_location, "/print"])
@@ -76,8 +82,14 @@ def uploaded_file(filename):
                                filename)
 
 @app.route('/printer/<filename>')
-def preview_file(filename):
+def final_file(filename):
     return send_from_directory(app.config['PRINTER_FOLDER'],
+                               filename)
+
+
+@app.route('/preview/<filename>')
+def preview_file(filename):
+    return send_from_directory(app.config['PREVIEW_FOLDER'],
                                filename)
 
 @app.route('/preview', methods=['POST'])
@@ -90,12 +102,20 @@ def preview():
         image = Image.open(os.path.join(UPLOAD_FOLDER, os.path.basename(photo['src'])))
         image = image.convert('RGBA')
 
+        rotation = int(photo['rotation'])
+        image = image.rotate(-rotation, expand=1)
+
         height = int(photo['height']) * 2
         width = int(photo['width']) * 2
-        size = width, height
+        size = (width, height)
+
+        mod_rotation = rotation % 360
+
+        if mod_rotation == 90 or mod_rotation == 270:
+            size = (height, width)
 
         image.thumbnail(size, Image.ANTIALIAS)
-        image = image.rotate(-int(photo['rotation']), expand=1)
+
         top = int(photo['top']) * 2
         left = int(photo['left']) * 2
         template.paste(image, (left, top))
@@ -103,6 +123,10 @@ def preview():
     time_string = str(int(time.time() * 1000))
     final_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', time_string+'print.png')
     template.save(final_location)
+
+    preview_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'preview', time_string+'print.png')
+    template.thumbnail((200, 133), Image.ANTIALIAS)
+    template.save(preview_location)
 
     server_location = "/printer/" + os.path.basename(final_location)
 
@@ -126,11 +150,12 @@ def printer():
 @app.route('/previous', methods=['GET'])
 def previous():
     file_names = []
-    glob_search = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', '*.png')
+    glob_search = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'preview', '*.png')
 
     for f in glob.glob(glob_search):
         print(f)
-        file_names.append("/printer/" + os.path.basename(f))
+        touple = ("/printer/" + os.path.basename(f), "/preview/" + os.path.basename(f));
+        file_names.append(touple)
 
     file_names.reverse();
 
@@ -142,4 +167,15 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
+
+    glob_search = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', '*.png')
+
+    for f in glob.glob(glob_search):
+        print(f)
+        template = Image.open(f)
+        preview_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'preview', os.path.basename(f))
+        print(preview_location)
+        template.thumbnail((200, 133), Image.ANTIALIAS)
+        template.save(preview_location)
+
     app.run(host='0.0.0.0')

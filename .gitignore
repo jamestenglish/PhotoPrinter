@@ -61,3 +61,5 @@ docs/_build/
 photos/*.jpg
 printer/*.jpg
 printer/*.png
+preview/*.png
+

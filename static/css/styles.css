@@ -71,3 +71,7 @@ body{
     height: 200px;
     width: 133px;
 }
+
+#print-whole-wait {
+    margin-top: 30px;
+}
