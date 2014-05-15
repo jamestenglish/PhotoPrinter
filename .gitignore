@@ -59,6 +59,7 @@ docs/_build/
 
 *.iml
 photos/*.jpg
+photos/*.png
 printer/*.jpg
 printer/*.png
 preview/*.png

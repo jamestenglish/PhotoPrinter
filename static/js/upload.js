@@ -92,10 +92,8 @@ $(function() {
                     console.log($($img));
                     var $sibling = $img.prev();
                     console.log($sibling);
-                    if(!$sibling.hasClass('row')) {
-                        $img.prependTo($sibling.parent());
-                    }
 
+                    $img.appendTo($sibling.parent());
                 });
 
                 var $handleSnapRotate = $('<div>');

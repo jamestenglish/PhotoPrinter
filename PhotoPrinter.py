@@ -124,11 +124,15 @@ def preview():
     final_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', time_string+'print.png')
     template.save(final_location)
 
-    preview_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'preview', time_string+'print.png')
-    template.thumbnail((200, 133), Image.ANTIALIAS)
+    preview_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'preview', 'a_' + time_string+'print.png')
+    template.thumbnail((600, 400), Image.ANTIALIAS)
     template.save(preview_location)
 
-    server_location = "/printer/" + os.path.basename(final_location)
+    old_files_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'preview', time_string+'print.png')
+    template.thumbnail((200, 133), Image.ANTIALIAS)
+    template.save(old_files_location)
+
+    server_location = "/preview/" + os.path.basename(preview_location)
 
     print(server_location)
 
@@ -138,7 +142,13 @@ def preview():
 def printer():
 
     json = request.get_json()
-    final_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', os.path.basename(json['data']))
+
+    basename = os.path.basename(json['data'])
+
+    if basename.startswith('a_'):
+        basename = basename[2:]
+
+    final_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'printer', basename)
 
     print(final_location)
 
